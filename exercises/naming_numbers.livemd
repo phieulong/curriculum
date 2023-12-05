@@ -84,7 +84,22 @@ naming_numbers.(1)
 Enter your solution below.
 
 ```elixir
+naming_number = fn int ->
+  case int do
+    1 -> "one"
+    2 -> "two"
+    3 -> "three"
+    4 -> "four"
+    5 -> "five"
+    6 -> "six"
+    7 -> "seven"
+    8 -> "eight"
+    9 -> "nine"
+  end
+end
 
+rand = Enum.random(1..9)
+naming_number.(rand)
 ```
 
 ## Numbering Names
@@ -181,7 +196,48 @@ flowchart
 </details>
 
 ```elixir
+numbering_names = fn string ->
+  IO.inspect(string)
 
+  case String.downcase(string) do
+    "zero" -> 0
+    "one" -> 1
+    "two" -> 2
+    "three" -> 3
+    "four" -> 4
+    "five" -> 5
+    "six" -> 6
+    "seven" -> 7
+    "eight" -> 8
+    "nine" -> 9
+  end
+end
+
+rand =
+  Enum.random([
+    "zero",
+    "Zero",
+    "one",
+    "One",
+    "two",
+    "Two",
+    "three",
+    "Three",
+    "four",
+    "Four",
+    "five",
+    "Five",
+    "six",
+    "Six",
+    "seven",
+    "Seven",
+    "eight",
+    "Eight",
+    "nine",
+    "Nine"
+  ])
+
+numbering_names.(rand)
 ```
 
 ## Commit Your Progress
