@@ -91,7 +91,8 @@ We often use maps to represent properties of something. For example, you might h
 Elixir is very helpful and provides a warning to let us know we're overriding a duplicate key.
 
 ```elixir
-%{duplicate_key: "value1", duplicate_key: "value2"}
+a = [{:duplicate_key, "value1"}, {:duplicate_key, "value2"}]
+a[:duplicate_key]
 ```
 
 As mentioned earlier, maps do not guarantee key order, which is why you'll notice the returned value of the map below does not have the same order as the map returned by the Elixir cell.
@@ -205,6 +206,8 @@ map[:hello]
 
 ```elixir
 map = %{hello: "world"}
+IO.inspect(map.hello)
+IO.inspect(map[:hello])
 ```
 
 ### Updating Maps
@@ -212,7 +215,7 @@ map = %{hello: "world"}
 You can update values in a map using `%{initial_map | updated_values}` syntax like so.
 
 ```elixir
-initial = %{key: "value"}
+initial = %{key: "value", hero: "hero"}
 
 %{initial | key: "new value"}
 ```
@@ -265,7 +268,8 @@ todo = %{title: "finish maps exercise", completed: false}
 </details>
 
 ```elixir
-
+map = %{title: "finish maps exercise", completed: false}
+todo = %{map | completed: true}
 ```
 
 ## Pattern Matching
@@ -312,9 +316,7 @@ If instead of re-binding the variable, we want to use the literal value of the v
 
 ```elixir
 name = "Jon"
-
 %{name: ^name} = %{name: "Bill"}
-
 name
 ```
 
@@ -344,7 +346,9 @@ Bind `2` and `4` in the following map to variables `two` and `four`.
 Enter your solution below.
 
 ```elixir
-%{one: 1, two: 2, three: 3, four: 4}
+%{two: two, four: four} = %{one: 1, two: 2, three: 3, four: 4}
+IO.inspect(two)
+IO.inspect(four)
 ```
 
 ## Further Reading
