@@ -177,7 +177,9 @@ In the Elixir cell below, create a keyword list of your favourite super hero. In
 Enter your solution below.
 
 ```elixir
-
+a = [{:mabu, "mabu"}, {:hero, "songoku"}]
+# List.keyfind!(a, hero_1, 1)
+# a[hero_1]
 ```
 
 ## Accessing A Key
@@ -195,7 +197,8 @@ keyword_list[:key]
 Access the `:hello` key in the following keyword list.
 
 ```elixir
-keyword_list = [hello: "world"]
+keyword_list = [hello: "world", hi: "how are you"]
+keyword_list[:hi]
 ```
 
 ## Keyword List Operators
@@ -210,7 +213,8 @@ If you add a list to a keyword list, you'll notice that the keyword list element
 evaluate as a tuple again. Remember that keyword lists are simply lists of tuples with an atom and a value.
 
 ```elixir
-[one: 1] ++ [1]
+a = [one: 1] ++ [1]
+a[:one]
 ```
 
 ### Your Turn
@@ -218,13 +222,13 @@ evaluate as a tuple again. Remember that keyword lists are simply lists of tuple
 In the Elixir cell below, use `++` to add `[one: 1]` to `[two: 2]` to make `[one: 1, two: 2]`.
 
 ```elixir
-
+[one: 1] ++ [two: 2]
 ```
 
 Remove `[two: 2]` from `[one: 1, two: 2]` to make `[one: 1]`.
 
 ```elixir
-
+[one: 1, two: 2] -- [two: 2]
 ```
 
 ## Pattern Matching
@@ -286,7 +290,8 @@ Bind `1` in the following keyword list to a variable `one`.
 Enter your solution below.
 
 ```elixir
-[one: 1, two: 2, three: 3, four: 4]
+[{key, one} | _] = [one: 1, two: 2, three: 3, four: 4]
+one
 ```
 
 ## Further Reading
