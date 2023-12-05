@@ -306,7 +306,8 @@ at least a 5 * 5 in width and height.
 Enter your solution below.
 
 ```elixir
-
+custom_maze = %{left: %{left: %{right: "Exit!"}}}
+custom_maze = %{"right" => %{"left" => %{"right" => "Exit!"}}}
 ```
 
 ## Commit Your Progress
