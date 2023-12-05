@@ -298,7 +298,9 @@ is_even? = fn int -> rem(int, 2) == 0 end
 Enter your solution below.
 
 ```elixir
-
+is_even = fn number -> (rem(number, 2) == 1 && true) || false end
+IO.inspect(is_even.(2))
+IO.inspect(is_even.(1))
 ```
 
 ## Multi-Parameter Functions
@@ -364,7 +366,9 @@ calculate_force = fn mass, acceleration -> mass * acceleration end
 Enter your solution below.
 
 ```elixir
-
+calculate_force = fn mass, acceleration -> mass * acceleration end
+IO.inspect(calculate_force.(10, 10))
+IO.inspect(calculate_force.(2, 4))
 ```
 
 ## Shorthand Syntax
@@ -413,7 +417,9 @@ subtract = &(&1 - &2)
 Enter your solution below.
 
 ```elixir
-
+subtract = &(&1 - &2)
+IO.inspect(subtract.(1, 1))
+IO.inspect(subtract.(20, 25))
 ```
 
 ### Your Turn
@@ -439,7 +445,9 @@ multiply_three = &(&1 * &2 * &3)
 Enter your solution below.
 
 ```elixir
-
+multiply_three = &(&1 * &2 * &3)
+IO.inspect(multiply_three.(2, 2, 2))
+IO.inspect(multiply_three.(2, 5, 3))
 ```
 
 ## First-class Functions
@@ -527,7 +535,9 @@ call_with_10_and_20 = fn callback -> callback.(10, 20) end
 Enter your solution below.
 
 ```elixir
-call_with_10_and_20 = nil
+add = fn int1, int2 -> int1 + int2 end
+call_with_10_and_20 = fn callback_fn -> callback_fn.(10, 20) end
+call_with_10_and_20.(add)
 ```
 
 ## Pipe Operator
@@ -640,7 +650,12 @@ multiply = fn int1, int2 -> int1 * int2 end
 Enter your solution below.
 
 ```elixir
-
+add = fn int1, int2 -> int1 + int2 end
+subtract = &(&1 - &2)
+multiply = &(&1 * &2)
+action = fn int1, c, int2 -> c.(int1, int2) end
+# action.(add, 10, 2)
+10 |> action.(add, 2) |> action.(multiply, 5) |> subtract.(4)
 ```
 
 ## Commit Your Progress
