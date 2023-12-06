@@ -116,6 +116,9 @@ end
 
 ```elixir
 defmodule Pokemon do
+  @enforce_keys [:name, :type, :health, :attack, :speed]
+  defstruct @enforce_keys
+
   @moduledoc """
   Pokemon
 
@@ -125,9 +128,24 @@ defmodule Pokemon do
       iex> Pokemon.attack(attacker, defender)
       %Pokemon{name: "Bulbasaur", type: :grass, health: 10.0, attack: 5, speed: 20}
   """
-  defstruct []
+  defp stronger?(attacker, defender) do
+    {attacker.type, defender.type} in [{:fire, :grass}, {:grass, :water}, {:water, :fire}]
+  end
 
   def attack(attacker, defender) do
+    rate =
+      cond do
+        stronger?(attacker, defender) -> 2
+        stronger?(defender, attacker) -> 0.5
+        true -> 1
+      end
+
+    new_health = defender.health - attacker.attack * rate
+
+    case new_health < 0 do
+      true -> %{defender | health: 0}
+      false -> %__MODULE__{defender | health: new_health}
+    end
   end
 end
 ```
@@ -135,7 +153,37 @@ end
 Consider using the following Elixir cell to test your solution.
 
 ```elixir
+defmodule RandomPokemon do
+  @names ["Charmander", "Bulbasaur", "charmander", "squirtle"]
 
+  def run do
+    %Pokemon{
+      name: random_string(),
+      type: random_type(),
+      health: random_number(1, 20),
+      attack: random_number(1, 20),
+      speed: random_number(1, 20)
+    }
+  end
+
+  defp random_string do
+    Enum.random(@names) <> "#{random_number(1, 1000)}"
+  end
+
+  defp random_number(start, finish) do
+    Enum.random(start..finish)
+  end
+
+  defp random_type do
+    Enum.random([:fire, :grass, :water])
+  end
+end
+
+attacker = RandomPokemon.run()
+defender = RandomPokemon.run()
+IO.inspect(attacker)
+IO.inspect(defender)
+Pokemon.attack(attacker, defender)
 ```
 
 ### Pokemon Instances
@@ -186,7 +234,13 @@ Pokemon.attack(charmander, bulbasaur)
 Enter your solution below.
 
 ```elixir
-
+charmander = %Pokemon{name: "Charmander", type: :fire, health: 20.0, attack: 5, speed: 20}
+bulbasaur = %Pokemon{name: "Bulbasar", type: :grass, health: 20.0, attack: 5, speed: 20}
+squirtle = %Pokemon{name: "Squirtle", type: :water, health: 20.0, attack: 5, speed: 20}
+round_1 = Pokemon.attack(charmander, bulbasaur)
+round_2 = Pokemon.attack(charmander, squirtle)
+round_3 = Pokemon.attack(squirtle, bulbasaur)
+IO.inspect([round_1, round_2, round_3])
 ```
 
 ## Commit Your Progress
