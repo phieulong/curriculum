@@ -120,7 +120,13 @@ end
 Call the `MutliParamExample.call/3` function with different arguments.
 
 ```elixir
+defmodule MutlParamExample do
+  def call(param1, param2, param3) do
+    IO.inspect(binding(), label: "Called with the following bindings")
+  end
+end
 
+MutlParamExample.call(1, 2, 3)
 ```
 
 ## Internal Module Functions
@@ -134,7 +140,7 @@ defmodule InternalExample do
   end
 
   def public do
-    InternalExample.internal()
+    internal()
     internal()
     "public finished executing"
   end
@@ -219,12 +225,12 @@ defmodule HigherOrder do
 end
 
 defmodule Callback do
-  def callback_function do
+  def callback_function(param) do
     "I was called!"
   end
 end
 
-HigherOrder.higher_order_function(&Callback.callback_function/0)
+HigherOrder.higher_order_function(fn -> Callback.callback_function(true) end)
 ```
 
 Notice we cannot simply pass `Callback.callback_function` as an argument.
@@ -318,7 +324,19 @@ end
 Enter your solution below.
 
 ```elixir
+defmodule Languages.VietNam do
+  def greeting do
+    Languages.English.greeting() <> ", Xin chao "
+  end
+end
 
+defmodule Languages.Laos do
+  defp greeting do
+    "kkkkk"
+  end
+end
+
+Languages.VietNam.greeting()
 ```
 
 ### Nested Modules
@@ -357,8 +375,8 @@ We use the `@` symbol to define a compile-time module attribute.
 
 ```elixir
 defmodule Hero do
-  @name "Spider-Man"
-  @nemesis "Green Goblin"
+  @name "Gohan"
+  @nemesis "Mabu"
 
   def introduce do
     "Hello, my name is #{@name}!"
@@ -434,9 +452,11 @@ defmodule ModuleScope2 do
   module_scope = 2
 
   def function_scope do
-    module_scope
+    IO.inspect(module_scope)
   end
 end
+
+ModuleScope2.function_scope()
 ```
 
 To use a variable, it must be bound in the same scope.
@@ -516,7 +536,35 @@ end
 </details>
 
 ```elixir
+defmodule Math do
+  @moduledoc """
+  Math
 
+  provide function to cal plus numbers 
+  """
+
+  @doc """
+  this function to plus 2 numbers 
+  iex> Math.add(2, 5)
+  7
+  """
+  def add(param1, param2) do
+    param1 + param2
+  end
+
+  @doc """
+  this function to plus 3 numbers 
+  iex> Math.add(10, 10, 10.1)
+  30.1
+  """
+  def add(param1, param2, param3) do
+    param1 + param2 + param3
+  end
+end
+
+a = Math.add(2, 5)
+b = Math.add(1, 2, 3)
+IO.inspect(binding(), label: "this")
 ```
 
 ## Default Arguments
@@ -548,7 +596,7 @@ defmodule MutlipleDefaultArgs do
     binding()
   end
 
-  def some_defaults(param1 \\ "default arg 1", param2) do
+  def some_defaults(param1 \\ "default arg 1") do
     binding()
   end
 end
@@ -561,7 +609,7 @@ MutlipleDefaultArgs.all_defaults()
 We can even provide default arguments for only some parameters in the function.
 
 ```elixir
-MutlipleDefaultArgs.some_defaults("overridden argument")
+MutlipleDefaultArgs.some_defaults()
 ```
 
 This sometimes results in some confusion with the function's arity, and the number of arguments passed into the function. For example, the `MutlipleDefaultArgs.some_defaults/2` function above has an arity of `2`, despite only being called with one argument.
@@ -583,7 +631,13 @@ Greeting.hello("Andrew")
 ```
 
 ```elixir
+defmodule Greeting do
+  def hello(name \\ "Jon") do
+    "Hello #{name}!"
+  end
+end
 
+Greeting.hello()
 ```
 
 ## Documentation
@@ -668,7 +722,7 @@ defmodule DoctestFailure do
     "expected return value"
   """
   def test do
-    "actual return value"
+    "expected return value"
   end
 end
 ```
@@ -696,25 +750,24 @@ If this is the case, you either have to fix your code, or remove/comment the cra
 Uncomment the following code and evaluate the cell to see an example. Re-comment your code to avoid crashing the livebook as you continue with the lesson.
 
 ```elixir
-# defmodule DoctestCrash Do
-# @moduledoc """
-# DoctestCrash
+defmodule DoctestCrash do
+  @moduledoc """
+  DoctestCrash
 
-# Explains Doctest Crashes With Examples
-# """
+  Explains Doctest Crashes With Examples
+  """
 
-# @doc """
-# Purposely Crashes Doctest Using Invalid Pattern Matching
+  @doc """
+  Purposely Crashes Doctest Using Invalid Pattern Matching
 
-# ## Examples
+  ## Examples
 
-# iex> {} = DoctestCrash.crash()
-# "2"
-# """
-# def crash do
-
-# end
-# end
+  iex> nil = DoctestCrash.crash()
+  # "2"
+  """
+  def crash do
+  end
+end
 ```
 
 ### Your Turn
