@@ -80,8 +80,12 @@ defmodule NumberFinder do
     -3
   """
   def smallest(number_list) do
-    list = Enum.sort(number_list)
-    List.first(list)
+    Enum.reduce(number_list, fn each, acc ->
+      min(each, acc)
+    end)
+
+    # list = Enum.sort(number_list)
+    # List.first(list)
   end
 
   @doc """
