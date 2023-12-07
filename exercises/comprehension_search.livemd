@@ -58,7 +58,9 @@ Using these values above, `all_items/0` should generate `300` unique items.
 ] = Products.all_items()
 ```
 
-<!-- livebook:{"break_markdown":true} -->
+```elixir
+Products.all_items()
+```
 
 ### Products.search/2
 
@@ -125,12 +127,33 @@ end
 
 ```elixir
 defmodule Products do
+  @names ["computer", "phone", "tablet"]
+  defstruct [:name, :price]
+
   def all_items do
+    for _ <- 1..300 do
+      %Products{name: random_name(), price: Enum.random(1..100)}
+    end
   end
 
-  def search(items, filters) do
+  defp random_name do
+    Enum.random(@names)
+  end
+
+  def search(items, filter) do
+    for x <- items,
+        (Keyword.has_key?(filter, :min) && x.price >= Keyword.get(filter, :min)) ||
+          !Keyword.has_key?(filter, :min),
+        (Keyword.has_key?(filter, :max) && x.price <= Keyword.get(filter, :max)) ||
+          !Keyword.has_key?(filter, :max),
+        (Keyword.has_key?(filter, :name) && x.name == Keyword.get(filter, :name)) ||
+          !Keyword.has_key?(filter, :name) do
+      x
+    end
   end
 end
+
+Products.all_items() |> Products.search(min: 99, max: 99, name: "phone")
 ```
 
 ## Commit Your Progress
