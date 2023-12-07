@@ -140,7 +140,7 @@ By combining these symbols, we can create more complex matches. For example, we
 can match on a phone number in the format `999-999-9999`.
 
 ```elixir
-Regex.scan(~r/\d\d\d-\d\d\d-\d\d\d\d/, "111-111-1111 222-222-2222 123-123-1234")
+Regex.scan(~r/\d+-\d+-\d+/, "111-111-1111 222-222-2222 123-123-1234")
 ```
 
 ### Frequency
@@ -173,7 +173,7 @@ Regex.scan(~r/1+/, "11211")
 For example, we could match `a` and `ab` with `ab?`.
 
 ```elixir
-Regex.scan(~r/ab?/, "a ab")
+Regex.scan(~r/\w+/, "a ab")
 ```
 
 `{}` allows us to specify a specific range of matches. `{3}` is exactly three matches. `{3,}` is
@@ -202,7 +202,7 @@ Regex.scan(~r/[1-4]/, "1234567")
 ```
 
 ```elixir
-Regex.scan(~r/[a-c]/, "abcd")
+Regex.scan(~r/[a-b]/, "abcd")
 ```
 
 * `|` match on one pattern or another.
@@ -244,7 +244,7 @@ Regex.scan(~r/\d/, "aa1234")
 [Regex.replace/4](https://hexdocs.pm/elixir/Regex.html#replace/4) replaces matches with a given string.
 
 ```elixir
-Regex.replace(~r/Peter Parker/, "Peter Parker is spiderman", "--secret--")
+Regex.replace(~r/Peter Parker/, "Peter Parker is spiderman Peter Parker", "--secret--")
 ```
 
 [Regex.replace/3](https://hexdocs.pm/elixir/Regex.html#replace/3) can also accept an anonymous function to use the matched value to determine how
@@ -361,7 +361,12 @@ end)
 </details>
 
 ```elixir
-
+Regex.replace(~r/(\d{3}-)\d{3}(-\d{4})/, "999-999-9999", fn match, group1, group2 ->
+  IO.inspect(match)
+  IO.inspect(group1)
+  IO.inspect(group2)
+  group1 <> "XXX-XXXX"
+end)
 ```
 
 ## Options
@@ -382,7 +387,8 @@ Regex.match?(
 -         # dash
 \d{4})    # line number i.e. 5555
 /x,
-  "+1 (111)-111-1111"
+  "+1 (111)-111-1111
+  +1 (111)-111-1111"
 )
 ```
 
@@ -396,7 +402,7 @@ For example, we can match all `a` characters followed by a `u` character. Notice
 `au` will match, and `a` is the matched value.
 
 ```elixir
-Regex.scan(~r/a(?=u)/, "a au")
+Regex.scan(~r/a(?=u)/, "a au") |> List.flatten()
 ```
 
 We can use negative lookahead `(?!)` to only match on expressions not followed by another.
@@ -425,7 +431,7 @@ Similarly, the negative lookbehind can find characters not preceded by another c
 Notice that `a` and `ta` match, but not `ua`.
 
 ```elixir
-Regex.scan(~r/(?<!u)a/, "ua ta a")
+Regex.scan(~r/(?<!u)a/, "ua ta a") |> List.flatten()
 ```
 
 Lookahead and lookbehind work with any valid regular expression.
@@ -463,7 +469,12 @@ end)
 </details>
 
 ```elixir
+string = "#9999999999"
 
+Regex.replace(~r/\#(\d{3})(\d{3})(\d{4})/, string, fn e, g1, g2, g3 ->
+  IO.inspect(e)
+  g1 <> "-" <> g2 <> "-" <> g3
+end)
 ```
 
 ## Further Reading
