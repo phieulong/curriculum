@@ -104,6 +104,9 @@ date = ~D[2000-10-01]
 time = ~T[12:30:10]
 # The Z Offset Specifies The Timezone Offset. Z Is Zero For UTC.
 datetime = ~U[2000-10-01 12:30:10Z]
+IO.inspect(date.__struct__)
+IO.inspect(date.calendar)
+IO.inspect(binding())
 ```
 
 ## Timezones
@@ -223,7 +226,7 @@ datetime.year
 When you want to display time information you can use the [Calendar](https://hexdocs.pm/elixir/Calendar.html) module's `strftime/3` function.
 
 ```elixir
-Calendar.strftime(DateTime.utc_now(), "%y-%m-%d %I:%M:%S %p")
+Calendar.strftime(DateTime.utc_now(), "%y-%m-%d %c %p")
 ```
 
 The `strftime/3` function accepts a [Date](https://hexdocs.pm/elixir/Date.html), [Time](https://hexdocs.pm/elixir/Time.html), [DateTime](https://hexdocs.pm/elixir/DateTime.html), or [NaiveDateTime](https://hexdocs.pm/elixir/NaiveDateTime.html) and uses the
@@ -293,7 +296,12 @@ DateTime.new!(Date.new!(1938, 4, 19), Time.new!(12, 0, 0))
 Enter your solution below.
 
 ```elixir
-
+{:ok, date} = Date.new(1938, 4, 19)
+{:ok, time} = Time.new(12, 30, 0)
+{:ok, datetime} = DateTime.new(date, time)
+date_new = Date.new(1938, 4, 19)
+IO.inspect(date_new)
+IO.inspect(date)
 ```
 
 If you solved the challenge above using sigils, complete it again using functions. If you solved the challenge using functions, then complete it again using sigils.
@@ -318,7 +326,7 @@ DateTime.utc_now()
 Enter your solution below.
 
 ```elixir
-
+datetime = DateTime.utc_now()
 ```
 
 Use [DateTime.add/4](https://hexdocs.pm/elixir/DateTime.html#add/4) to add one day to the current [DateTime](https://hexdocs.pm/elixir/DateTime.html). This creates a new [DateTime](https://hexdocs.pm/elixir/DateTime.html) for tomorrow at the current time.
@@ -336,7 +344,8 @@ DateTime.add(DateTime.utc_now(), day_in_seconds)
 Enter your solution below
 
 ```elixir
-
+datetime = DateTime.new!(~D[2023-12-07], ~T[12:00:00])
+datetime = DateTime.add(datetime, 1, :day)
 ```
 
 Use [DateTime.compare/2](https://hexdocs.pm/elixir/DateTime.html#compare/2) to compare the [DateTime](https://hexdocs.pm/elixir/DateTime.html) below with the current [DateTime](https://hexdocs.pm/elixir/DateTime.html). The `date` below should be `:lt` (less than) the current [DateTime](https://hexdocs.pm/elixir/DateTime.html).
@@ -374,7 +383,9 @@ DateTime.diff(finish, start)
 Enter your solution below.
 
 ```elixir
-
+date = DateTime.new!(~D[2000-01-01], ~T[12:00:00])
+other_date = DateTime.new!(~D[2010-01-01], ~T[12:00:00])
+DateTime.diff(other_date, date)
 ```
 
 ## Timex
@@ -390,13 +401,13 @@ with [DateTime](https://hexdocs.pm/elixir/DateTime.html).
 You can create a timezone aware [DateTime](https://hexdocs.pm/elixir/DateTime.html) using [Timex.now/1](https://hexdocs.pm/timex/Timex.html#now/1) and the name of a timezone.
 
 ```elixir
-Timex.now("Asia/Kabul")
+Timex.now("Asia/Ho_Chi_Minh")
 ```
 
 You can find the full list of available timezones using `Tzdata.zone_list/0`.
 
 ```elixir
-Tzdata.zone_list()
+IO.inspect(Tzdata.zone_list())
 ```
 
 Many websites host the full list of timezones such as [timezonedb.com](https://timezonedb.com/time-zones)
@@ -409,7 +420,7 @@ Use [Timex.now/1](https://hexdocs.pm/timex/Timex.html#now/1) to create a datetim
 to ensure it is correct.
 
 ```elixir
-
+Timex.now("Asia/Ho_Chi_Minh")
 ```
 
 ## Further Reading
