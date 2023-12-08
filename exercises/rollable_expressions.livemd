@@ -158,9 +158,37 @@ defmodule Rollable do
     "Ice Shard: deal [12d4](https://www.google.com/search?q=roll+12d4) ice damage."
   """
   def replace(string) do
+    d = Regex.scan(~r/\d+d\d+/, string) |> IO.inspect()
+    rem = String.split(string, "#{d}") |> List.flatten() |> IO.inspect()
+    # prefix = Regex.scan(~r/.(?=)/, string) |> List.flatten() |> IO.inspect()
+    # postfix= Regex.scan(~r/(?=\d+d\d+)./, string) |> List.flatten() |> IO.inspect()
+    "#{Enum.at(rem, 0)}[#{d}](https://www.google.com/search?q=roll+#{d})#{Enum.at(rem, 1)}"
   end
 
+  @doc """
+  Roll
+
+  ## Examples
+
+
+    iex> Rollable.roll("1d5") |> String.match?(~r/\\d+/)
+    true
+
+    iex> Rollable.roll("Fireball: deal 8d6 fire damage.") |> String.match?(~r/.\\d+./)
+    true
+   
+  """
   def roll(string) do
+    dice = Regex.scan(~r/\d+/, string) |> IO.inspect()
+    Enum.at(dice, 0) |> IO.inspect()
+    times = String.to_integer("#{Enum.at(dice, 0)}") |> IO.inspect()
+    sides = String.to_integer("#{Enum.at(dice, 1)}") |> IO.inspect()
+    max = (times * sides) |> IO.inspect()
+    damages = Enum.random(0..max)
+    result = String.split(string, Enum.join(dice, "d")) |> Enum.join("#{damages}")
+    result |> IO.inspect()
+    result |> String.match?(~r/\d+/) |> IO.inspect()
+    result
   end
 end
 ```
