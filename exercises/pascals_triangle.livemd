@@ -173,9 +173,31 @@ defmodule Pascal do
       iex> Pascal.of(5)
       [[1], [1, 1], [1, 2, 1], [1, 3, 3, 1], [1, 4, 6, 4, 1]]
   """
+
+  def new_row(_vec) do
+    [1, 1]
+    # a = rem(length(vec), 2) == 1
+    # new_vec= 0 ++ vec ++ 0
+    # Enum.reduce(new_vec, )
+  end
+
+  def append(vec, n) do
+    IO.puts(vec)
+    IO.puts(n)
+    IO.puts(length(vec) == n)
+
+    case length(vec) == n do
+      true -> vec
+      false -> append(vec ++ new_row(List.last(vec)), n)
+    end
+  end
+
   def of(n) do
+    append([[1]], n)
   end
 end
+
+Pascal.of(2)
 ```
 
 ## Commit Your Progress
