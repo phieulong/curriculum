@@ -86,8 +86,14 @@ defmodule Factorial do
     3628800
   """
   def of(n) do
+    case n do
+      1 -> 1
+      _ -> n * of(n - 1)
+    end
   end
 end
+
+Factorial.of(10)
 ```
 
 ## Commit Your Progress
