@@ -133,6 +133,11 @@ MapsOnly.inspect("this should crash")
 We can do the same inside of a `case` statement, or with other data types such as lists.
 
 ```elixir
+[head | tail] = list = [1, 2, 3]
+IO.inspect(head, label: "head")
+IO.inspect(tail, label: "tail")
+IO.inspect(list, label: "list")
+
 case [1, 2, 3] do
   [head | tail] = list ->
     IO.inspect(head, label: "head")
@@ -152,7 +157,10 @@ We can use the match operator anytime we have a value bound to a parameter or va
 Create a `case` statement that will return the first element in a 2 element tuple, or the first element in 2 element a list.
 
 ```elixir
-
+case {1, 2} do
+  {a, _} -> IO.inspect(a, label: "this first element of tuple")
+  [a, _] -> IO.inspect(a, label: "this first element of list")
+end
 ```
 
 Use pattern matching to ensure the `Check.must_have_elements!/1` function returns true when called with a list that has more than one element and otherwise causes a [FunctionClauseError](https://hexdocs.pm/elixir/FunctionClauseError.html).
@@ -186,7 +194,7 @@ defmodule Check do
       iex> Check.must_have_elements!([])
       ** (FunctionClauseError) no function clause matching in Check.must_have_elements!/1
   """
-  def must_have_elements!(list) do
+  def must_have_elements!([_head | _tail] = list) do
     true
   end
 end
@@ -217,7 +225,7 @@ defmodule SingleCaseExample do
     case param do
       [] -> "1"
       [_] -> "2"
-      [_, _] -> "3"
+      [_ | _] -> "3"
     end
   end
 end
@@ -225,6 +233,7 @@ end
 SingleCaseExample.run([]) |> IO.inspect(label: "first")
 SingleCaseExample.run([1]) |> IO.inspect(label: "second")
 SingleCaseExample.run([1, 1]) |> IO.inspect(label: "third")
+SingleCaseExample.run([1, 1, 1]) |> IO.inspect(label: "third")
 ```
 
 ```elixir
@@ -291,7 +300,16 @@ defmodule Greeter do
       iex> Greeter.hello(["Swamy", "Jeff", "Jeremy"])
       "Hello everyone!"
   """
-  def hello(names) do
+  def hello([a]) do
+    "Hi #{a}!"
+  end
+
+  def hello([a, b]) do
+    "Hi #{a}, Hello #{b}!"
+  end
+
+  def hello([_ | _]) do
+    "Hello everyone!"
   end
 end
 ```
@@ -354,7 +372,19 @@ end)
 </details>
 
 ```elixir
+defmodule Mine do
+  def my_turn(list) do
+    list
+    |> Enum.map(fn {key, val} ->
+      case key do
+        :double -> val * 2
+        :halve -> div(val, 2)
+      end
+    end)
+  end
+end
 
+Mine.my_turn([{:double, 2}, {:halve, 10}, {:double, 4}])
 ```
 
 ## Pattern Matching Vs. If
@@ -426,7 +456,8 @@ MessageMatchExample.send(%{is_admin: false}, "Error!")
 ```
 
 ```elixir
-MessageMatchExample.send(%{is_admin: true}, "Successful!")
+{:ok, message} = MessageMatchExample.send(%{is_admin: true}, "Successful!")
+message
 ```
 
 ## Pin Operator
@@ -465,7 +496,7 @@ We can also use this for internal values in a collection. The following is the s
 as `[1, 2, 3] = [2, 2, 3]`
 
 ```elixir
-first = 1
+first = 2
 actual = [2, 2, 3]
 [^first, 2, 3] = actual
 ```
@@ -483,9 +514,9 @@ We'll also use the pin operator when triggering control flow with pattern matchi
 ```elixir
 pinned_value = 1
 
-case {:ok, 1} do
+case {:ok, 2} do
   {:ok, ^pinned_value} -> "clause 1"
-  {:ok, generic_value} -> "clause 2"
+  {:ok, 2} -> "clause 2"
 end
 ```
 
@@ -523,7 +554,7 @@ actual = {"hello", "hi"}
 expected = {"hello"}
 actual = {"hello", "hi"}
 
-expected = actual
+^expected = actual
 ```
 
 ## Further Reading
