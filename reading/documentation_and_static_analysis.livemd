@@ -120,8 +120,8 @@ defmodule DocTestExample do
       iex> DocTestExample.add(1, 2)
       3
   """
-  def add(int, int) do
-    2
+  def add(i1, i2) do
+    i1 + i2
   end
 end
 ```
