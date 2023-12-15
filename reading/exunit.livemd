@@ -150,7 +150,7 @@ defmodule FailingTest do
   use ExUnit.Case
 
   test "failing test" do
-    assert false
+    assert nil
   end
 end
 
@@ -166,7 +166,7 @@ defmodule FailingTestWithMessage do
   use ExUnit.Case
 
   test "failing example" do
-    assert false, "This message will display for a failing test."
+    assert false, "This message will display for a failing test. #{false}"
   end
 end
 
@@ -292,7 +292,10 @@ defmodule StringContainsTest do
 
   test "string contains hello" do
     string = "hello world"
-    string =~ "hello"
+    wrong = "hello"
+    IO.puts(string)
+    IO.puts(wrong)
+    assert string =~ wrong
   end
 end
 
