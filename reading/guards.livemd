@@ -66,7 +66,7 @@ The `IntegerGuardExample` module above will only accept integers, so it will cra
 provide it a float.
 
 ```elixir
-IntegerGuardExample.double(1.5)
+MultipleGuardExample.double(1.5)
 ```
 
 You can use multiple guards together in the same function head. For example, we could
@@ -245,9 +245,12 @@ end
 
 ```elixir
 defmodule Say do
-  def hello(name) do
+  def hello(name) when is_binary(name) do
+    "Hello, #{name}!"
   end
 end
+
+Say.hello("Stephen")
 ```
 
 ### Your Turn
@@ -289,7 +292,22 @@ Enter your solution below.
 
 ```elixir
 defmodule Percent do
-  def display(percent) do
+  @doc """
+  iex> Percent.display(0.1)
+  "0.1%"
+
+  iex> Percent.display(100)
+  "100%"
+
+  iex> Percent.display(0)
+  ** (FunctionClauseError) no function clause matching in Percent.display/1
+
+
+  iex> Percent.display(101)
+  ** (FunctionClauseError) no function clause matching in Percent.display/1
+  """
+  def display(percent) when is_number(percent) and percent > 0 and percent <= 100 do
+    "#{percent}%"
   end
 end
 ```
