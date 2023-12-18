@@ -176,15 +176,15 @@ functionality from the [Stream](https://hexdocs.pm/elixir/Stream.html) module an
 Benchee.run(
   %{
     "enum" => fn ->
-      1..200
+      1..10
+      |> Enum.filter(fn each -> each <= 5 end)
       |> Enum.map(fn each -> each * 2 end)
-      |> Enum.filter(fn each -> each <= 10 end)
       |> Enum.take(4)
     end,
     "stream" => fn ->
-      1..200
+      1..10
+      |> Stream.filter(fn each -> each <= 5 end)
       |> Stream.map(fn each -> each * 2 end)
-      |> Stream.filter(fn each -> each <= 10 end)
       |> Stream.take(4)
       |> Enum.to_list()
     end
@@ -230,7 +230,11 @@ In the Elixir cell below, try refactoring this code using the [Stream](https://h
 ```
 
 ```elixir
-
+1..100
+|> Stream.map(fn each -> div(each, 2) end)
+|> Stream.map(fn each -> each * 3 end)
+|> Stream.filter(fn each -> rem(each, 2) === 0 end)
+|> Enum.to_list()
 ```
 
 ## Stream Gotchas
@@ -239,8 +243,22 @@ While the Stream module can improve performance, it's worth mentioning that it's
 For example, a single `Stream.map` is not faster than `Enum.map`.
 
 ```elixir
-{stream_time, _result} = :timer.tc(fn -> Stream.map(1..1000, &(&1 * 2)) |> Enum.to_list() end)
-{enum_time, _result} = :timer.tc(fn -> Enum.map(1..1000, &(&1 * 2)) end)
+{stream_time, _result} =
+  :timer.tc(fn ->
+    1..10000
+    |> Stream.map(fn e -> e * 2 end)
+    |> Stream.map(fn e -> e * 2 end)
+    |> Stream.filter(fn each -> each <= 100 end)
+    |> Enum.to_list()
+  end)
+
+{enum_time, _result} =
+  :timer.tc(fn ->
+    1..10000
+    |> Enum.map(fn e -> e * 2 end)
+    |> Enum.map(fn e -> e * 2 end)
+    |> Enum.filter(fn each -> each <= 100 end)
+  end)
 
 %{stream_time: stream_time, enum_time: enum_time}
 ```
@@ -430,7 +448,15 @@ end)
 </details>
 
 ```elixir
+starting_integer = 13
 
+Stream.iterate(starting_integer, fn e ->
+  case rem(e, 2) == 0 do
+    true -> div(e, 2)
+    false -> e * 3 + 1
+  end
+end)
+|> Enum.take_while(fn e -> e != 4 end)
 ```
 
 ### Stream.unfold/2
@@ -491,7 +517,7 @@ end)
 </details>
 
 ```elixir
-
+Stream.unfold(1, fn e -> {e ** 3, e + 1} end) |> Enum.take(20)
 ```
 
 ## Commit Your Progress
