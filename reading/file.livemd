@@ -145,7 +145,7 @@ To clean up the file, uncomment the following code which should remove it.
 Now the file should no longer exist. Let's check with [File.exists?/2](https://hexdocs.pm/elixir/File.html#exists?/2).
 
 ```elixir
-File.exists?("file.txt")
+File.rm!("file.txt")
 ```
 
 ### Your Turn
@@ -157,7 +157,7 @@ DO NOT DELETE IMPORTANT FILES ON YOUR SYSTEM WHEN USING THE FILE MODULE
 </div>
 
 ```elixir
-
+File.touch!("file.txt")
 ```
 
 ## Path Module Functions
@@ -181,6 +181,7 @@ path1 = "path/to/folder"
 path2 = "more/path/to/file.txt"
 
 path1 <> path2
+Path.dirname(__DIR__)
 ```
 
 [Path.join/2](https://hexdocs.pm/elixir/Path.html#join/2) is smart enough to treat these as separate folders to make the path.
@@ -273,12 +274,12 @@ Now we can write an Elixir term in it's binary format, then read the file.
 {:ok, binary} = File.read("binary.txt")
 
 [1, 2] = :erlang.binary_to_term(binary)
+IO.puts(:erlang.binary_to_term(binary))
 
 # Cleaning Up The File To Avoid Saving A File On Your Computer.
-File.rm("binary.txt")
 ```
 
-## Handling Large Files
+## Handling Large Filesk
 
 Using [File.read/1](https://hexdocs.pm/elixir/File.html#read/1) loads all of a file's contents into memory. This causes performance issues when dealing with large files, or when dealing with many files.
 
