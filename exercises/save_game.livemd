@@ -58,6 +58,8 @@ Implement the `Game` module as documented below.
 
 ```elixir
 defmodule Game do
+  defstruct [:name, :level, :location]
+
   @moduledoc """
   Documentation for `Game`
 
@@ -74,14 +76,20 @@ defmodule Game do
 
   @doc """
   Save an elixir term into a given file name.
+  iex> Game.save(%Game{name: "Peter Parker", level: 10, location: "New York"}, "save_file1")
+  :ok
   """
   def save(data, filename) do
+    File.write!(filename, :erlang.term_to_binary(data))
   end
 
   @doc """
   Retrieve an elixir term from a given file name.
+  iex> Game.load("save_file1")
+  %Game{name: "Peter Parker", level: 10, location: "New York"}
   """
   def load(filename) do
+    File.read!(filename) |> :erlang.binary_to_term()
   end
 end
 ```
