@@ -48,7 +48,7 @@ Use [File.ls/1](https://hexdocs.pm/elixir/File.html#ls/1) to list all of the fil
 
 ```elixir
 IO.puts(__DIR__)
-File.ls!(__DIR__ <> "/..")
+File.ls!(__DIR__)
 ```
 
 Use [File.mkdir/1](https://hexdocs.pm/elixir/File.html#mkdir/1) to create a directory called `drills`.
