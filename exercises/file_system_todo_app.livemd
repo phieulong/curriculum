@@ -57,8 +57,7 @@ defmodule TodoList do
   def complete(item) do
     new_list = list() -- [item]
     File.write(@storage, :erlang.term_to_binary(new_list))
-  end
-end
+  end end
 ```
 
 </details>
@@ -67,6 +66,7 @@ Implement the `TodoList` module as documented. You may choose any file for your 
 
 ```elixir
 defmodule TodoList do
+  @storage "storage_file"
   @moduledoc """
   Documentation for `TodoList`
   """
@@ -79,6 +79,12 @@ defmodule TodoList do
       []
   """
   def list do
+    IO.inspect(File.read(@storage))
+
+    case File.read(@storage) do
+      {:ok, list} -> :erlang.binary_to_term(list)
+      _ -> []
+    end
   end
 
   @doc """
@@ -86,12 +92,17 @@ defmodule TodoList do
 
   ## Examples
 
-      TodoList.add("task 1")
-      TodoList.add("task 2")
-      TodoList.list()
+      iex> TodoList.add("task 1")
+      :ok
+      iex> TodoList.add("task 2")
+      :ok
+      iex> TodoList.list()
       ["task 2", "task 1"]
+     
   """
   def add(item) do
+    list = [item | list()]
+    File.write!(@storage, :erlang.term_to_binary(list))
   end
 
   @doc """
@@ -103,8 +114,16 @@ defmodule TodoList do
       TodoList.complete("finish homework")
       TodoList.list()
       ["task 2", "task 1"]
+      iex> TodoList.complete("task 1")
+      :ok
+      iex> TodoList.complete("task 2")
+      :ok
+      iex> TodoList.list()
+      []
   """
   def complete(item) do
+    list = list() -- [item]
+    File.write!(@storage, :erlang.term_to_binary(list))
   end
 end
 ```
