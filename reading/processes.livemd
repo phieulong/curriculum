@@ -90,7 +90,8 @@ flowchart
 Perhaps without realizing it, you've been using processes for some time now. Each Elixir cell in livebook is a process. It even has a **pid** (personal identifier) that we can see with `self()`.
 
 ```elixir
-self()
+self() |> IO.inspect()
+self() |> IO.inspect()
 ```
 
 We can `send/2` and `receive/1` messages between processes by using their **pid**. Likewise, a process can send its `self()` a message.
@@ -142,7 +143,7 @@ related to processes. We'll use the `alive?/1` function to show that the process
 ```elixir
 pid = spawn(fn -> IO.puts("I was called") end)
 
-Process.alive?(pid) && IO.puts("I am alive!")
+IO.puts("I am alive!") && Process.alive?(pid)
 ```
 
 We can use [Process.sleep/1](https://hexdocs.pm/elixir/Process.html#sleep/1) to pause the execution and show that the spawned process dies
@@ -151,9 +152,7 @@ after it is called.
 ```elixir
 pid = spawn(fn -> IO.puts("I was called") end)
 
-Process.sleep(100)
-
-Process.alive?(pid) || IO.puts("I am dead :(")
+Process.alive?(pid) && IO.puts("I am dead :(")
 ```
 
 Processes are isolated from each other. That means that when a child process raises an error, it will not crash the parent process. Instead, it will only log an error.
@@ -224,7 +223,7 @@ Spawn a linked process and crash this Elixir cell below.
 Comment out your solution when complete to avoid continuously crashing the livebook!
 
 ```elixir
-
+# pid = spawn_link(fn -> raise "oops" end)
 ```
 
 ## Message Passing
@@ -270,7 +269,36 @@ In the Elixir cell below, spawn a new process and send it a message `{:hello, "w
 `IO.puts` the message's payload where `"world"` is the payload.
 
 ```elixir
+pid =
+  spawn(fn ->
+    receive do
+      [a | _] -> IO.inspect(a)
+      {:hi, message} -> IO.inspect(message)
+      {:hello, message} -> IO.inspect(message)
+    end
+  end)
 
+send(pid, [1, 2])
+
+pid =
+  spawn(fn ->
+    receive do
+      {:hi, message} -> IO.inspect(message)
+      {:hello, message} -> IO.inspect(message)
+    end
+  end)
+
+send(pid, {:hi, "world"})
+
+pid =
+  spawn(fn ->
+    receive do
+      {:hi, message} -> IO.inspect(message)
+      {:hello, message} -> IO.inspect(message)
+    end
+  end)
+
+send(pid, {:hello, "aaaa"})
 ```
 
 ## State
@@ -304,12 +332,21 @@ defmodule ServerProcess do
     IO.puts("called #{Enum.random(1..10)}")
 
     receive do
-      "message" -> loop()
+      "message" ->
+        IO.puts("hi")
+        loop()
     end
   end
 end
 
 server_process = spawn(fn -> ServerProcess.loop() end)
+send(server_process, "message")
+send(server_process, "message")
+send(server_process, "message")
+send(server_process, "message")
+send(server_process, "message")
+send(server_process, "message")
+send(server_process, "message")
 ```
 
 We've used [Enum.random/1](https://hexdocs.pm/elixir/Enum.html#random/1) to show that the process continues to loop and receive messages.
@@ -375,6 +412,7 @@ defmodule Counter do
 
     receive do
       :increment -> loop(state + 1)
+      :decrement -> loop(state - 1)
     end
   end
 end
@@ -385,7 +423,7 @@ counter_process = spawn(fn -> Counter.loop() end)
 You should be able to send a `:decrement` message to a spawned `Counter`. Uncomment and evaluate the code below to test your solution.
 
 ```elixir
-# send(counter_process, :decrement)
+send(counter_process, :decrement)
 ```
 
 ## Commit Your Progress
