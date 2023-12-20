@@ -1,18 +1,24 @@
-defmodule MyApp do
-  @moduledoc """
-  Documentation for `MyApp`.
-  """
+defmodule MyApp.Stack do
+  use GenServer
 
-  @doc """
-  Hello world.
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, opts[:state], name: __MODULE__)
+  end
 
-  ## Examples
+  @impl true
+  def init(state) do
+    {:ok, state}
+  end
 
-      iex> MyApp.hello()
-      :world
+  @impl true
+  def handle_call(:pop, _from, state) do
+    [head | tail] = state
+    {:reply, head, tail}
+  end
 
-  """
-  def hello do
-    :world
+  @impl true
+  def handle_call({:push, element}, _from, state) do
+    new_state = [element | state]
+    {:reply, new_state, new_state}
   end
 end
