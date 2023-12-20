@@ -101,8 +101,8 @@ Uncomment and run the following code to see it crashes the current Livebook proc
 The same is true if we manually exit a process using [Process.exit/2](https://hexdocs.pm/elixir/Process.html#exit/2) with the `:exit` reason. Uncomment and run the following code to see it crashes the current Livebook process, then re-comment the code.
 
 ```elixir
-# {:ok, pid} = GenServer.start_link(UnsupervisedWorker, [])
-# Process.exit(pid, :exit)
+{:ok, pid} = GenServer.start_link(UnsupervisedWorker, [])
+Process.exit(pid, :normal)
 ```
 
 If you would like to learn more about fault taulerance and error handling, Joe Armstrong created an incredible video on the subject.
