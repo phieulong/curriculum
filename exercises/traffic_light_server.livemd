@@ -123,6 +123,70 @@ end
 
 </details>
 
+```elixir
+defmodule TrafficLights.Light do
+  use GenServer
+
+  def start_link(_arg) do
+    GenServer.start_link(__MODULE__, :green)
+  end
+
+  def current_light(pid) do
+    GenServer.call(pid, :current_light)
+  end
+
+  def transition(pid) do
+    GenServer.cast(pid, :transition)
+  end
+
+  @impl true
+  def init(arg) do
+    {:ok, arg}
+  end
+
+  @impl true
+  def handle_cast(:transition, state) do
+    {:noreply, transition_light(state)}
+  end
+
+  @impl true
+  def handle_call(:current_light, _from, state) do
+    {:reply, state, state}
+  end
+
+  defp transition_light(state) do
+    case state do
+      :green -> :yellow
+      :yellow -> :red
+      :red -> :green
+    end
+  end
+end
+
+ExUnit.start(auto_run: false)
+
+defmodule TrafficLights.LightTest do
+  use ExUnit.Case
+
+  test "increment/1" do
+    {:ok, pid} = TrafficLights.Light.start_link([])
+
+    assert :green == TrafficLights.Light.current_light(pid)
+    assert :ok == TrafficLights.Light.transition(pid)
+
+    :yellow = TrafficLights.Light.current_light(pid)
+    :ok = TrafficLights.Light.transition(pid)
+
+    :red = TrafficLights.Light.current_light(pid)
+    :ok = TrafficLights.Light.transition(pid)
+
+    :green = TrafficLights.Light.current_light(pid)
+  end
+end
+
+ExUnit.run()
+```
+
 ## TrafficGrid
 
 Create a `TrafficLights.Grid` [GenServer](https://hexdocs.pm/elixir/GenServer.html) that manages five `TrafficLights.Light` processes.
@@ -265,6 +329,85 @@ end
 ```
 
 </details>
+
+```elixir
+defmodule TrafficLights.Grid do
+  use GenServer
+
+  def start_link(_arg) do
+    GenServer.start_link(__MODULE__, [:green, :red, :red, :red, :red])
+  end
+
+  def current_lights(pid) do
+    GenServer.call(pid, :current_light)
+  end
+
+  def transition(pid) do
+    GenServer.cast(pid, :transition)
+  end
+
+  @impl true
+  def init(arg) do
+    {:ok, arg}
+  end
+
+  @impl true
+  def handle_cast(:transition, state) do
+    new =
+      state
+      |> Enum.map(fn e -> transition_light(e) end)
+      |> Enum.to_list()
+
+    {:noreply, new}
+  end
+
+  @impl true
+  def handle_call(:current_light, _from, state) do
+    {:reply, state, state}
+  end
+
+  defp transition_light(state) do
+    case state do
+      :green -> :yellow
+      :yellow -> :red
+      :red -> :green
+    end
+  end
+end
+
+ExUnit.start(auto_run: false)
+
+defmodule TrafficLights.GridTest do
+  use ExUnit.Case
+
+  test "increment/1" do
+    {:ok, pid} = TrafficLights.Grid.start_link([])
+
+    :ok == TrafficLights.Grid.transition(pid)
+
+    assert [:yellow, :green, :green, :green, :green] == TrafficLights.Grid.current_lights(pid)
+
+    :ok = TrafficLights.Grid.transition(pid)
+    :ok = TrafficLights.Grid.transition(pid)
+    :ok = TrafficLights.Grid.transition(pid)
+    :ok = TrafficLights.Grid.transition(pid)
+
+    assert [:red, :yellow, :yellow, :yellow, :yellow] == TrafficLights.Grid.current_lights(pid)
+
+    :ok = TrafficLights.Grid.transition(pid)
+    :ok = TrafficLights.Grid.transition(pid)
+    :ok = TrafficLights.Grid.transition(pid)
+    :ok = TrafficLights.Grid.transition(pid)
+    :ok = TrafficLights.Grid.transition(pid)
+    :ok = TrafficLights.Grid.transition(pid)
+    :ok = TrafficLights.Grid.transition(pid)
+
+    assert [:green, :red, :red, :red, :red] == TrafficLights.Grid.current_lights(pid)
+  end
+end
+
+ExUnit.run()
+```
 
 ## Commit Your Progress
 

@@ -64,6 +64,14 @@ This will be a **pair testing** exercise Using TDD (Test Driven Development). We
 
 As **the implementer** you are encouraged to *fake* your solution (within reason) if the test allows for it. This will encourage your **tester** to write a better test.
 
+```elixir
+Process.send_after(self(), {:mess, "hello"}, 2000)
+
+receive do
+  {:mess, payload} -> payload
+end
+```
+
 ## Commit Your Progress
 
 DockYard Academy now recommends you use the latest [Release](https://github.com/DockYard-Academy/curriculum/releases) rather than forking or cloning our repository.
