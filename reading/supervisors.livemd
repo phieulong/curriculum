@@ -101,8 +101,8 @@ Uncomment and run the following code to see it crashes the current Livebook proc
 The same is true if we manually exit a process using [Process.exit/2](https://hexdocs.pm/elixir/Process.html#exit/2) with the `:exit` reason. Uncomment and run the following code to see it crashes the current Livebook process, then re-comment the code.
 
 ```elixir
-{:ok, pid} = GenServer.start_link(UnsupervisedWorker, [])
-Process.exit(pid, :normal)
+# {:ok, pid} = GenServer.start_link(UnsupervisedWorker, [])
+# Process.exit(pid, :normal)
 ```
 
 If you would like to learn more about fault taulerance and error handling, Joe Armstrong created an incredible video on the subject.
@@ -206,7 +206,8 @@ Process.exit(pid, :exit)
 Re-evaluate the diagram above and you should see a new `Worker` process started with a different pid. Repeat this process to kill each process under the supervisor and see them restarted.
 
 ```elixir
-
+pid = :c.pid(0, 394, 0)
+Process.exit(pid, :exit)
 ```
 
 ## Restart Strategies
@@ -446,7 +447,14 @@ So the timeline of crashes would be:
 Start **four** `Bomb` processes under a supervisor with different bomb times. Try each restart strategy `:one_for_one`, `one_for_all`, and `:rest_for_one`. Predict the crash timeline then evaluate your code. Did the result match your prediction?
 
 ```elixir
+# children = [
+#   {Bomb, [name: "bomb1", bomb_time: 1000]},
+#   {Bomb, [name: "bomb2", bomb_time: 2000]},
+#   {Bomb, [name: "bomb3", bomb_time: 3000]},
+#   {Bomb, [name: "bomb4", bomb_time: 4000]}
+# ]
 
+# {:ok, super_pid} = Supervisor.start_link(children, strategy: :one_for_one, max_restarts: 5)
 ```
 
 ## Syntax Sugar
@@ -455,14 +463,14 @@ Instead of providing a map with the `:id` and `:start` keys, we can instead prov
 
 ```elixir
 children = [
-  {Bomb, [name: "Syntax Sugar Bomb", bomb_time: 1000]}
+  {Bomb, [name: "Syntax Sugar Bomb 1", bomb_time: 1000]}
 ]
 ```
 
 Uncomment the following code to see the crash timeline, then re-comment it.
 
 ```elixir
-# Supervisor.start_link(children, strategy: :one_for_one)
+Supervisor.start_link(children, strategy: :one_for_one, max_restarts: 5)
 ```
 
 ## Further Reading
