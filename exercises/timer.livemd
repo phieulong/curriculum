@@ -105,13 +105,46 @@ defmodule Timer do
   iex> Process.sleep(1200)
   iex> Timer.seconds(pid)
   1
+  iex> Process.sleep(1000)
+  iex> Timer.seconds(pid)
+  2
+  iex> Process.sleep(1000)
+  iex> Timer.seconds(pid)
+  3
   """
   use GenServer
 
-  def start_link(_opts) do
+  def start_link(_arg) do
+    GenServer.start_link(__MODULE__, 0)
   end
 
   def get_time(timer_pid) do
+    GenServer.call(timer_pid, :seconds)
+  end
+
+  def seconds(timer_pid) do
+    GenServer.call(timer_pid, :seconds)
+  end
+
+  @impl true
+  def init(arg) do
+    schedule_time()
+    {:ok, arg}
+  end
+
+  @impl true
+  def handle_info(:increment, state) do
+    schedule_time()
+    {:noreply, state + 1}
+  end
+
+  @impl true
+  def handle_call(:seconds, _from, state) do
+    {:reply, state, state}
+  end
+
+  def schedule_time() do
+    Process.send_after(self(), :increment, 1000)
   end
 end
 ```
