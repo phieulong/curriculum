@@ -134,7 +134,7 @@ sequenceDiagram
 contains information about who the parent (`:owner`) process is, the task's pid (`:pid`), and a reference (`:ref`) used to monitor if the task crashes.
 
 ```elixir
-Task.async(fn -> nil end)
+Task.async(fn -> 1 + 1 end)
 ```
 
 To demonstrate the performance value of concurrency, let's say we have two computations which each take `1` second, it would normally take us `2` seconds
@@ -183,7 +183,12 @@ execution and parallel execution.
 You may consider using [Process.sleep/1](https://hexdocs.pm/elixir/Process.html#sleep/1) to simulate an expensive computation.
 
 ```elixir
-
+task1 = Task.async(fn -> Process.sleep(1000) end)
+task2 = Task.async(fn -> Process.sleep(1000) end)
+Task.await(task1)
+Task.await(task2)
+# Process.sleep(1000)
+# Process.sleep(1000)
 ```
 
 ## Awaiting Many Tasks
@@ -254,7 +259,7 @@ In the Elixir cell below, spawn a task which takes one second to complete.
 `await/2` the task and alter the timeout value to be one second. Awaiting the task should crash.
 
 ```elixir
-
+Task.await(Task.async(fn -> Process.sleep(2000) end), 1000)
 ```
 
 ## Further Reading

@@ -54,17 +54,19 @@ Generally speaking, we should start [Task](https://hexdocs.pm/elixir/Task.html) 
 The `Task.Supervisor` is started as a child under a normal supervisor. We start the `Task.Supervisor` as a named process using an atom or a module name.
 
 ```elixir
-children = [
-  {Task.Supervisor, name: MyTaskSupervisor}
-]
 
-{:ok, supervisor_pid} =
-  Supervisor.start_link(children, strategy: :one_for_one, name: :parent_supervisor)
 ```
 
 We don't need to define a `MyTaskSupervisor` module. The supervisor uses this name to start a `Task.Supervisor` process. We can see that `MyTaskSupervisor` is a child process of our supervisor.
 
 ```elixir
+children = [
+  {Task.Supervisor, name: MyTaskSupervisor}
+]
+
+{:ok, supervisor_pid} =
+  Supervisor.start_link(children, strategy: :one_for_one)
+
 Supervisor.which_children(supervisor_pid)
 ```
 
