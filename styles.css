@@ -1,0 +1,26 @@
+@import 'otherstyles.css';
+p {
+    padding: 10px 5px;
+    margin: 10px;
+    border-style: solid;
+    border-width: 5px;
+    border-color: black;
+
+    color: green;
+    font-weight: bold;
+}
+.class {
+    height: 100px;
+    width: 100px;
+    padding: 10px;
+    border: 10px solid black;
+}
+.green-text{
+    color: green
+}
+#first-paragraph{
+    color: greenyellow;
+}
+.parent > .child {
+    color: brown;
+}
