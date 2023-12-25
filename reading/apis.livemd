@@ -472,7 +472,20 @@ IO.puts(message)
 </details>
 
 ```elixir
+url = "https://api.openai.com/v1/chat/completions"
 
+headers = [
+  {"Content-Type", "application/json"},
+  {"Authorization", "Bearer sk-1WHDb0NwRkq3mfyRVparT3BlbkFJ500axJFd8pZ2RKxGJ0x"}
+]
+
+body =
+  Jason.encode!(%{
+    model: "gpt-3.5-turbo",
+    messages: [%{role: "user", content: "Hello!"}]
+  })
+
+Finch.build(:post, url, headers, body)
 ```
 
 ## Commit Your Progress

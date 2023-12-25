@@ -1,6 +1,6 @@
 defmodule StackTest do
   use ExUnit.Case
-  doctest Stack
+  @doctest Stack
 
   test "greets the world" do
     assert Stack.hello() == :world
