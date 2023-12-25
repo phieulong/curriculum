@@ -114,6 +114,24 @@ You should be able to retrieve the data for a pokemon and return it as a `Pokemo
 Pokelixir.get("charizard")
 ```
 
+```elixir
+defmodule Pokemon do
+  defstruct [
+    :id,
+    :name,
+    :hp,
+    :attack,
+    :defense,
+    :special_attack,
+    :special_defense,
+    :speed,
+    :height,
+    :weight,
+    :types
+  ]
+end
+```
+
 ## Get All Pokemon
 
 You can retrieve a list of pokemon using the following URL.
